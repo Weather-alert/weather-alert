@@ -1,0 +1,9 @@
+[submodule "user-service"]
+	path = user-service
+	url = https://github.com/Weather-alert/user-service.git
+[submodule "weather-service"]
+	path = weather-service
+	url = https://github.com/Weather-alert/weather-service.git
+[submodule "notification-service"]
+	path = notification-service
+	url = https://github.com/Weather-alert/notification-service.git
