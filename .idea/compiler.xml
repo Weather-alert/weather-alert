@@ -6,13 +6,18 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="weather-alert" />
+        <module name="notification-service" />
+        <module name="user-service" />
+        <module name="weather-service" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="weather-alert" options="-parameters" />
+      <module name="notification-service" options="-parameters" />
+      <module name="user-service" options="-parameters" />
+      <module name="weather-alert" options="" />
+      <module name="weather-service" options="-parameters" />
     </option>
   </component>
 </project>
