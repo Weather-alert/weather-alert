@@ -19,4 +19,3 @@ services:
       dockerfile: src/main/docker/Dockerfile.native
     ports:
       - "8083:8080"
-
