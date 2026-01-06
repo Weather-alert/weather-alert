@@ -18,4 +18,4 @@ services:
       context: ./notification-service
       dockerfile: src/main/docker/Dockerfile.native
     ports:
-      - "8083:8080"
+      - "8084:8080"
