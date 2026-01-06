@@ -1,0 +1,24 @@
+docker run \
+  --name notification-postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=secret \
+  -e POSTGRES_DB=tokendb \
+  -p 5434:5432 \
+  -d postgres:16
+  
+docker run \
+  --name user-postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=secret \
+  -e POSTGRES_DB=userdb \
+  -p 5433:5432 \
+  -d postgres:17
+
+docker run \
+  --name weather-postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=secret \
+  -e POSTGRES_DB=subscriptiondb \
+  -p 5432:5432 \
+  -d postgres:16
+ 

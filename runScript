@@ -1,0 +1,15 @@
+path=/home/blaz/Documents/faks/PRPO/weather-alert/
+
+runQuarkusDev='echo'
+
+cmd1="cd $path/notification-service/ && $runQuarkusDev"
+
+cmd2="cd $path/weather-service/ && $runQuarkusDev"
+
+cmd3="cd $path/user-service/ && $runQuarkusDev"
+
+
+gnome-terminal -- bash -c "$cmd1; exec bash"
+gnome-terminal -- bash -c "$cmd2; exec bash"
+gnome-terminal -- bash -c "$cmd3; exec bash"
+
