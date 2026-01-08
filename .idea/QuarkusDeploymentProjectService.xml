@@ -6,7 +6,7 @@
         <entry key="notification-service">
           <value>
             <ModuleState>
-              <option name="hash" value="772823162" />
+              <option name="hash" value="-268106162" />
               <option name="version" value="1" />
             </ModuleState>
           </value>
@@ -22,7 +22,7 @@
         <entry key="weather-service">
           <value>
             <ModuleState>
-              <option name="hash" value="1311173604" />
+              <option name="hash" value="270244280" />
               <option name="version" value="1" />
             </ModuleState>
           </value>
