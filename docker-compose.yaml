@@ -76,7 +76,7 @@ services:
   notification-service:
     build:
       context: ./notification-service
-      dockerfile: src/main/docker/Dockerfile.jvm
+      dockerfile: src/main/docker/Dockerfile.native
     container_name: notification-service
     ports:
       - "8084:8084"
