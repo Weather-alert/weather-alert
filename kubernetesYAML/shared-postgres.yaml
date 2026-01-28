@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: shared-postgres
+  namespace: weather-alert
+spec:
+  serviceName: shared-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shared-postgres
+  template:
+    metadata:
+      labels:
+        app: shared-postgres
+    spec:
+      securityContext:
+        fsGroup: 999
+      containers:
+        - name: postgres
+          image: postgres:16
+          env:
+            - name: POSTGRES_DB
+              value: maindb
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: shared-postgres-secret
+                  key: QUARKUS_DATASOURCE_PASSWORD
+          volumeMounts:
+            - name: shared-postgres-pg-data
+              mountPath: /var/lib/postgresql/data
+              mountPath: /var/lib/postgresql/data
+              subPath: postgres-data
+  volumeClaimTemplates:
+    - metadata:
+        name: shared-postgres-pg-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 4Gi

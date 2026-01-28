@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service
+  namespace: weather-alert
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        app: notification-service
+    spec:
+      containers:
+        - name: notification-service
+          image: blaz040/notification-service:1.0.0-SNAPSHOT
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8084
+          env:
+            - name: SERVICE_ACCOUNT_PATH
+              value: /secrets/serviceAccountKey.json
+          envFrom:
+            - configMapRef:
+                name: notification-service-config
+            - secretRef:
+                name: notification-service-secret
+          volumeMounts:
+            - name: google-service-account
+              mountPath: /secrets
+              readOnly: true
+
+          readinessProbe:
+            httpGet:
+              path: /q/health/ready
+              port: 8084
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /q/health/live
+              port: 8084
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+      volumes:
+        - name: google-service-account
+          secret:
+            secretName: notification-service-secret-file

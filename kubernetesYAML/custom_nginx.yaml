@@ -1,0 +1,119 @@
+# # 1. The Identity Card (Service Account)
+# apiVersion: v1
+# kind: ServiceAccount
+# metadata:
+#   name: nginx-ingress-service-account
+#   namespace: weather-alert
+# ---
+# # 2. The Permissions (RBAC)
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: ClusterRole
+# metadata:
+#   name: nginx-ingress-clusterrole
+# rules:
+#   - apiGroups: [""]
+#     resources: ["services", "endpoints", "nodes", "pods", "secrets", "configmaps", "namespaces"]
+#     verbs: ["get", "list", "watch"]
+#   - apiGroups: [""]
+#     resources: ["events"]
+#     verbs: ["create", "patch"]
+#   - apiGroups: ["networking.k8s.io"]
+#     resources: ["ingresses", "ingressclasses"]
+#     verbs: ["get", "list", "watch"]
+#   - apiGroups: ["networking.k8s.io"]
+#     resources: ["ingresses/status"]
+#     verbs: ["update"]
+#   - apiGroups: ["coordination.k8s.io"] # Crucial for F5 NGINX version 3.x
+#     resources: ["leases"]
+#     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+#   - apiGroups: ["discovery.k8s.io"]
+#     resources: ["endpointslices"]
+#     verbs: ["get", "list", "watch"]
+# ---
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: ClusterRoleBinding
+# metadata:
+#   name: nginx-ingress-clusterrole-binding
+# subjects:
+#   - kind: ServiceAccount
+#     name: nginx-ingress-servicea-ccount
+#     namespace: weather-alert 
+# roleRef:
+#   kind: ClusterRole
+#   name: nginx-ingress-clusterrole
+#   apiGroup: rbac.authorization.k8s.io
+# ---
+
+# # 0. The Glue (IngressClass)
+# apiVersion: networking.k8s.io/v1
+# kind: IngressClass
+# metadata:
+#   name: nginx # This MUST match the --ingress-class=nginx arg in your deployment
+# spec:
+#   controller: nginx.org/ingress-controller # This is the ID for the F5/NGINX image you're using
+# ---
+# # 0.5 The Default Config (ConfigMap)
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: nginx-config
+#   namespace: weather-alert
+# data:
+# # You can leave this empty for now, the controller just needs it to exist
+
+
+# # 3. The Controller (Your modified Deployment)
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: custom-nginx-ingress
+# spec:
+#   replicas: 1 # Set to 1 to save CPU/Student Credit
+#   selector:
+#     matchLabels:
+#       app: nginx-ingress
+#   template:
+#     metadata:
+#       labels:
+#         app: nginx-ingress
+#     spec:
+#       serviceAccountName: nginx-ingress-serviceaccount
+#       containers:
+#       - name: nginx-ingress
+#         image: nginx/nginx-ingress:3.3.0 # Using a specific version instead of :latest
+#         args:
+#           - /nginx-ingress-controller
+#           - --ingress-class=nginx
+#           - --healthz-port=10254
+#           - --enable-custom-resources=false 
+#           - --report-ingress-status
+#           - --ingressclass=nginx
+#           - --external-service=ingress-nginx-controller 
+#           - --watch-namespace=
+#         resources:
+#           requests:
+#             cpu: "100m"    # Only 0.02 CPU - very light!
+#             memory: "128Mi"
+#           limits:
+#             cpu: "200m"
+#             memory: "256Mi"
+# ---
+# # 4. The Entry Point (LoadBalancer Service)
+# # This creates your Azure Public IP
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: ingress-nginx-controller
+# spec:
+#   type: LoadBalancer
+#   ports:
+#     - port: 80
+#       targetPort: 80
+#       protocol: TCP
+#       name: http
+#     - port: 443
+#       targetPort: 443
+#       protocol: TCP
+#       name: https
+#   selector:
+#     app: nginx-ingress

@@ -1,0 +1,43 @@
+# apiVersion: apps/v1
+# kind: StatefulSet
+# metadata:
+#   name: user-postgres
+# spec:
+#   serviceName: user-postgres
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: user-postgres
+#   template:
+#     metadata:
+#       labels:
+#         app: user-postgres
+#     spec:
+#       securityContext:
+#         fsGroup: 999
+#       containers:
+#         - name: postgres
+#           image: postgres:16
+#           env:
+#             - name: POSTGRES_DB
+#               value: userdb
+#             - name: POSTGRES_USER
+#               value: postgres
+#             - name: POSTGRES_PASSWORD
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: user-service-secret
+#                   key: QUARKUS_DATASOURCE_PASSWORD
+#           volumeMounts:
+#             - name: user-pg-data
+#               mountPath: /var/lib/postgresql/data
+#               mountPath: /var/lib/postgresql/data
+#               subPath: postgres-data
+#   volumeClaimTemplates:
+#     - metadata:
+#         name: user-pg-data
+#       spec:
+#         accessModes: ["ReadWriteOnce"]
+#         resources:
+#           requests:
+#             storage: 4Gi

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: notification-service-config
+  namespace: weather-alert
+data:
+  QUARKUS_DATASOURCE_DB_KIND: postgresql
+  #QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://notification-postgres:5432/notificationdb
+  QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://shared-postgres:5432/maindb
+  QUARKUS_DATASOURCE_USERNAME: postgres
+  QUARKUS_HIBERNATE_ORM_DATABASE_GENERATION: update
+  SERVICE_ACCOUNT_PATH: /secrets/serviceAccountKey.json    
+  

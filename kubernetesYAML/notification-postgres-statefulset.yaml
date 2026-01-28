@@ -1,0 +1,43 @@
+# apiVersion: apps/v1
+# kind: StatefulSet
+# metadata:
+#   name: notification-postgres
+# spec:
+#   serviceName: notification-postgres
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: notification-postgres
+#   template:
+#     metadata:
+#       labels:
+#         app: notification-postgres
+#     spec:
+#       securityContext:
+#         fsGroup: 999
+#       containers:
+#         - name: postgres
+#           image: postgres:16
+#           env:
+#             - name: POSTGRES_DB
+#               value: notificationdb
+#             - name: POSTGRES_USER
+#               value: postgres
+#             - name: POSTGRES_PASSWORD
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: notification-service-secret
+#                   key: QUARKUS_DATASOURCE_PASSWORD
+#           volumeMounts:
+#             - name: notification-pg-data
+#               mountPath: /var/lib/postgresql/data
+#               mountPath: /var/lib/postgresql/data
+#               subPath: postgres-data
+#   volumeClaimTemplates:
+#     - metadata:
+#         name: notification-pg-data
+#       spec:
+#         accessModes: ["ReadWriteOnce"]
+#         resources:
+#           requests:
+#             storage: 4Gi
